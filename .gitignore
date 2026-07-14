@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+
+# SvelteKit / Vite build artifacts
+.svelte-kit
+dist
+build
+.output
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# pnpm — keep pnpm-lock.yaml, ignore stray npm lockfiles
+package-lock.json
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.test
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code — local-only settings (project settings.json is committed)
+.claude/settings.local.json
+
+# Playwright MCP artifacts
+.playwright-mcp
+
+# SVN metadata (legacy, no longer needed under git)
+.svn
+
+# Scratch screenshots at repo root
+theme-manager-*.png

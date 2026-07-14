@@ -1,0 +1,13 @@
+{
+	"name": "visit-ui-monorepo",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm --parallel -F visit-ui -F demo dev",
+		"build": "pnpm -F visit-ui build && pnpm -F demo build",
+		"check": "pnpm -r check"
+	},
+	"dependencies": {
+		"pnpm": "^11.8.0"
+	}
+}

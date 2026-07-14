@@ -1,0 +1,129 @@
+/* Default (Dark) values - overridden at runtime by the theme store */
+@theme {
+	--color-body: #1e2939ff;
+	--color-body1: #12203dff;
+	--color-body2: #101828ff;
+	--color-dialog: #121f3aff;
+	--color-overlay: #00000080;
+	--color-navbar: #19191978;
+	--color-hr: #434b5577;
+	--color-text: #dbdbdbff;
+	--color-head: #dededeff;
+	--color-lab: #e2e2e2ff;
+	--color-title: #ffffffff;
+	--color-code: #f7b047ff;
+	--color-code-bg: #00000033;
+	--color-card: #51596536;
+	--color-card-border: #75757554;
+	--color-acc: #344252ff;
+	--color-acc-hover: #3e5264ff;
+	--color-acc-border: #75757554;
+	--color-input: #364153ff;
+	--color-input-hover: #404d61ff;
+	--color-input-text: #c7c7c7ff;
+	--color-input-border: #4e5b6fff;
+	--color-input-focus: #ef562fff;
+	--color-input-error: #ff9191ff;
+	--color-pri: #ef562fff;
+	--color-pri-hover: #b36100ff;
+	--color-pri-focus: #f7b047ff;
+	--color-pri-text: #ffffffff;
+	--color-sec: #53595bff;
+	--color-sec-hover: #3f4345ff;
+	--color-sec-focus: #606669ff;
+	--color-sec-text: #ffffffff;
+	--color-danger: #dc2626ff;
+	--color-danger-hover: #b91c1cff;
+	--color-danger-focus: #f87171ff;
+	--color-danger-text: #ffffffff;
+	--color-info: #60a5faff;
+	--color-success: #4ade80ff;
+	--color-warning: #fbbf24ff;
+	--color-error: #f87171ff;
+	--radius-lg: 0.5rem;
+	--pad: 1rem;
+	--card-border-sz: 1px;
+	--input-border-sz: 1px;
+	--input-focus-sz: 1px;
+	--button-focus-sz: 1px;
+	--navbar-border-sz: 1px;
+	--color-chip: #35465bff;
+}
+
+/* -- BODY -- */
+body {
+	color: var(--color-text);
+	line-height: 1.7;
+}
+
+
+/* -- SCROLLBAR -- */
+html {
+	scrollbar-color: var(--color-card-border) var(--color-input);
+}
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-input);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-card-border);
+	border-radius: var(--radius-lg);
+}
+
+
+/* -- UL/OL -- */
+
+ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+ol {
+	list-style-type: decimal;
+	padding-left: 1.25rem;
+}
+
+ul,
+ol {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	color: var(--color-text);
+}
+
+ul li {
+	position: relative;
+	padding-left: 1.5rem;
+}
+
+ul li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.5em;
+	width: 0.6rem;
+	height: 0.6rem;
+	border: 1.5px solid var(--color-text);
+	border-radius: 50%;
+	background: transparent;
+}
+
+
+/* -- PRINT (used by SavePdf) -- */
+/* Force black-on-white for PDF export — overrides all theme/Tailwind classes on descendants */
+.PRINT * {
+	color: #000 !important;
+	background-color: #fff !important;
+}
+
+.PRINT h1,
+.PRINT h2,
+.PRINT h3 {
+	color: #1aa4e6 !important;
+}
+

@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(svn rm *)",
+      "mcp__playwright__browser_run_code_unsafe",
+      "Bash(nohup pnpm dev)",
+      "Bash(disown)",
+      "Bash(rm -rf node_modules/.vite .svelte-kit; nohup pnpm dev > /tmp/demo-dev.log 2>&1 & *)",
+      "Bash(grep -rn \"^\\\\s*code=$\" /home/simboden/visit-ui/apps/demo/src/routes --include=\"*.svelte\")",
+      "Bash(grep -rn \"^\\\\s*code=\\\\s*$\" /home/simboden/visit-ui/apps/demo/src/routes --include=\"*.svelte\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4000/typography)",
+      "Bash(pnpm --filter visit-ui build)",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_evaluate",
+      "Bash(find /home/simboden/letters/visit_letters_s5/frontend -type f | head -80 && echo \"---\" && ls /home/simboden/letters/visit_letters_s5/frontend)",
+      "Read(//home/simboden/letters/visit_letters_s5/frontend/**)",
+      "Bash(bash run.sh)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(pkill -f \"run.sh\")",
+      "Bash(pkill -f \"vite.*4000\")",
+      "Bash(bash /home/simboden/visit-ui/run.sh)",
+      "Bash(xargs -r kill -9)",
+      "Bash(pkill -f \"svelte-package\")",
+      "Bash(pkill -f \"vite\")"
+    ],
+    "additionalDirectories": [
+      "/tmp"
+    ]
+  }
+}

@@ -35,3 +35,17 @@ Thumbs.db
 
 # Scratch screenshots at repo root
 theme-manager-*.png
+docs/visit-ui-spec.txt
+docs/adr/0001-appshell-snippet-composition.md
+docs/adr/0002-theme-runtime-css-vars.md
+docs/plans/plan_stage1.md
+docs/plans/plan_stage2.md
+docs/plans/plan_stage3.md
+docs/plans/plan_stage4.md
+docs/plans/plan_stage5.md
+docs/plans/plan_stage6.md
+docs/plans/plan_stage7.md
+docs/plans/plan_stage8.md
+docs/plans/plan_stage9.md
+docs/doc.md
+visit_simplified.svg

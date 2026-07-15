@@ -1,5 +1,7 @@
 visit-ui is an opinionated UI library for building Svelte 5 webapp frontends.
 
+Live demo: https://simboden.github.io/visit-ui/
+
 ## What it provides
 
 **Theming** — look and feel is controlled through CSS custom properties, grouped into themes.

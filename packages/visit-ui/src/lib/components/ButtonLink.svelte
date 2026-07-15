@@ -3,6 +3,7 @@
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { tv } from 'tailwind-variants';
 	import { Icon, Tooltip } from './index.js';
+	import { resolveHref } from '../utils/routeHref.js';
 
 	type Props = {
 		title?: string;
@@ -28,6 +29,8 @@
 		children,
 		...restProps
 	}: Props = $props();
+
+	const resolvedHref = $derived(resolveHref(href));
 
     const base = [
         'inline-flex',
@@ -80,7 +83,7 @@
 		<a
 			{...props}
 			{...restProps}
-			{href}
+			href={resolvedHref}
 			target={open_in_new_tab ? '_blank' : undefined}
 			rel={open_in_new_tab ? 'noopener noreferrer' : undefined}
 			class={styles({ size, variant, color, class: className })}

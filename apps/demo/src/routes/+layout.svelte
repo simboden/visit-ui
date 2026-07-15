@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { base } from '$app/paths';
 	import { page } from '$app/state';
 	import {AppLeftSidebar,AppNavBar,AppRightSidebar,AppShell,SidebarGroup,SidebarItem,theme,lang,ThemeManager,ThemeSwitch,LangSwitch,ToastPanel } from 'visit-ui';
 	import { mdiPencil } from '@mdi/js';
@@ -17,7 +18,7 @@
 	{#snippet navbar()}
 		<AppNavBar>
 			{#snippet brand()}
-				<a href="/" class="flex items-center gap-2 text-lg font-bold">
+				<a href={base || '/'} class="flex items-center gap-2 text-lg font-bold">
 					<img src={visitLogo} alt="" class="h-8 w-8" />
 					visit-ui demo
 				</a>

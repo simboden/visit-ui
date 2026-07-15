@@ -1,0 +1,143 @@
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.detect.outputs.should_deploy }}
+      bump: ${{ steps.detect.outputs.bump }}
+      is_dev_merge: ${{ steps.detect.outputs.is_dev_merge }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect associated dev PR merge
+        id: pr_merge
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const response = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha
+            });
+
+            const isDevMerge = response.data.some((pr) =>
+              pr.merged_at && pr.base.ref === 'master' && pr.head.ref === 'dev'
+            );
+
+            core.setOutput('is_dev_merge', String(isDevMerge));
+
+      - name: Detect deploy context
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin dev --depth=1 || true
+
+          bump="$(node -e "const fs=require('fs'); const event=JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH,'utf8')); const messages=(event.commits ?? []).map((commit) => (commit.message || '').split('\\n')[0].trim().toLowerCase()); let bump='none'; for (const message of messages) { if (/^(feat|minor)(\\b|[:(])/.test(message)) { bump='minor'; break; } if (bump === 'none' && /^(patch|fix)(\\b|[:(])/.test(message)) { bump='patch'; } } process.stdout.write(bump);")"
+
+          is_dev_merge='${{ steps.pr_merge.outputs.is_dev_merge }}'
+          head_subject="$(git log -1 --pretty=%s)"
+
+          if git show-ref --verify --quiet refs/remotes/origin/dev; then
+            if git merge-base --is-ancestor HEAD origin/dev; then
+              is_dev_merge=true
+            fi
+
+            if git rev-parse -q --verify HEAD^2 >/dev/null; then
+              second_parent="$(git rev-parse HEAD^2)"
+              if git merge-base --is-ancestor "$second_parent" origin/dev; then
+                is_dev_merge=true
+              fi
+            fi
+          fi
+
+          if [[ "$head_subject" == Merge* ]] && [[ "$head_subject" == *dev* ]] && [[ "$head_subject" == *master* ]]; then
+            is_dev_merge=true
+          fi
+
+          should_deploy=false
+          if [[ "$is_dev_merge" == "true" || "$bump" != "none" ]]; then
+            should_deploy=true
+          fi
+
+          echo "bump=$bump" >> "$GITHUB_OUTPUT"
+          echo "is_dev_merge=$is_dev_merge" >> "$GITHUB_OUTPUT"
+          echo "should_deploy=$should_deploy" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: analyze
+    if: needs.analyze.outputs.should_deploy == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build visit-ui package
+        run: pnpm --filter visit-ui build
+
+      - name: Build demo
+        run: pnpm --filter demo build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+
+      - name: Add SPA fallback for GitHub Pages
+        run: cp apps/demo/build/index.html apps/demo/build/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/demo/build
+
+  deploy:
+    needs:
+      - analyze
+      - build
+    if: needs.analyze.outputs.should_deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

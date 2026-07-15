@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import { resolveHref } from '../utils/routeHref.js';
 
 	type Props = {
 		href?: string;
@@ -10,12 +11,13 @@
 	} & Omit<HTMLAnchorAttributes, 'href' | 'onclick' | 'class'>;
 
 	let { href, onclick, children, class: className = '', ...restProps }: Props = $props();
+	const resolvedHref = $derived(resolveHref(href));
 
 	const base = 'text-pri font-medium no-underline hover:underline transition-all duration-200';
 </script>
 
 {#if href}
-	<a {href} class="{base} {className}" {...restProps}>
+	<a href={resolvedHref} class="{base} {className}" {...restProps}>
 		{@render children()}
 	</a>
 {:else}

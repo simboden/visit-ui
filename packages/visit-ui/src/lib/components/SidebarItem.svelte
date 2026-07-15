@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { Icon } from './index.js';
 	import LocOrText from './LocOrText.svelte';
+	import { resolveHref, stripBasePath } from '../utils/routeHref.js';
 
 	type Props = {
 		// testo letterale, o "#text_id" per una traduzione (vedi LocOrText)
@@ -50,7 +51,8 @@
 		onRightIconClick?.(e as unknown as MouseEvent);
 	}
 
-	const active = $derived(!!href && page.url.pathname === href);
+	const resolvedHref = $derived(resolveHref(href));
+	const active = $derived(!!href && stripBasePath(page.url.pathname) === href);
 
 	// Quando l'item non ha icona sinistra, recupera --sidebar-dropdown-indent (impostata da
 	// SidebarDropdown sull'<ul> che racchiude i suoi children) per allineare la label a quella
@@ -79,9 +81,9 @@
 	const activeClass = 'bg-input-hover rounded-lg';
 </script>
 
-<li class="!px-2 before:hidden {className}">
+<li class="before:hidden {className}" style="padding-inline: 0.5rem;">
 	{#if href}
-		<a {href} {onclick} aria-current={active ? 'page' : undefined} class="{base} {active ? activeClass : ''}">
+		<a href={resolvedHref} {onclick} aria-current={active ? 'page' : undefined} class="{base} {active ? activeClass : ''}">
 			{#if icon}
 				<Icon {icon} class="shrink-0" />
 			{/if}

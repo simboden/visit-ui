@@ -3,6 +3,7 @@
 	import { lang } from '../stores/lang.svelte.js';
 	import { Button, Icon, Card, FR, Spring, H3, TextArea } from './index.js';
 	import Markdown from '../markdown/Markdown.svelte';
+	import { resolveHref } from '../utils/routeHref.js';
 
 	type Props = {
 		text_id: string;
@@ -28,6 +29,7 @@
 
 	let text = $derived(lang.t(text_id));
 	let type = $derived(lang.type(text_id));
+	let resolvedLink = $derived(resolveHref(link));
 
 	$effect(() => {
 		if (show_dialog && dialog) dialog.showModal();
@@ -52,9 +54,9 @@
 <span>
 	{#if link}
 		<a
-			href={link}
+			href={resolvedLink}
 			data-cy={datacy}
-			class="text-text no-underline hover:no-underline hover:bg-(--color-input-hover) p-2 rounded-lg"
+			class="text-text no-underline hover:no-underline hover:bg-input-hover p-2 rounded-lg"
 		>
 			{text}
 		</a>

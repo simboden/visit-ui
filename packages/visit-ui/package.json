@@ -1,6 +1,6 @@
 {
 	"name": "visit-ui",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"scripts": {
 		"build": "npm run prepack",
 		"dev": "svelte-kit sync && svelte-package --watch",

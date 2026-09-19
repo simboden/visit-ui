@@ -16,11 +16,12 @@
 		maxLength?: number;
 		pattern?: RegExp;
 		patternMessage?: string;
+		tooShortMessage?: string;
+		tooLongMessage?: string;
 	};
 
 	const DEFAULT_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&\-_+=()!?"]).{8,}$/;
-	const DEFAULT_PATTERN_MSG =
-		'Must contain uppercase, lowercase, a digit and a symbol (@#$%^&-_+=()!?")';
+	const DEFAULT_PATTERN_MSG = 'Must contain uppercase, lowercase, a digit and a symbol (@#$%^&-_+=()!?")';
 
 	let {
 		value = $bindable(''),
@@ -31,7 +32,9 @@
 		minLength = 8,
 		maxLength = 32,
 		pattern = DEFAULT_PATTERN,
-		patternMessage = DEFAULT_PATTERN_MSG
+		patternMessage = DEFAULT_PATTERN_MSG,
+		tooShortMessage = `Too short — use at least #minLength characters`,
+		tooLongMessage  = `Too long — use no more than #maxLength characters`
 	}: Props = $props();
 
 	let error = $state('');
@@ -45,12 +48,14 @@
 		}
 		if (value.length < minLength) {
 			valid = false;
-			error = `Too short — use at least ${minLength} characters`;
+			//error = `Too short — use at least ${minLength} characters`;
+			error = tooShortMessage.replace('#minLength', String(minLength) );
 			return;
 		}
 		if (value.length > maxLength) {
 			valid = false;
-			error = `Too long — use no more than ${maxLength} characters`;
+			//error = `Too long — use no more than ${maxLength} characters`;
+			error = tooLongMessage.replace('#maxLength', String(maxLength));
 			return;
 		}
 		if (!pattern.test(value)) {

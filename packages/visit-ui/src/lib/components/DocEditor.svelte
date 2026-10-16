@@ -193,6 +193,9 @@
     :global(.ProseMirror ol)         { list-style: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
     :global(.ProseMirror blockquote) { border-left: 4px solid var(--color-card-border); padding-left: 1rem; opacity: 0.7; margin: 0.5rem 0; }
     :global(.ProseMirror p)          { font-size: 1rem; margin: 0.25rem 0; }
+    /* empty paragraphs (<p></p>) rendered via {@html} have zero height; a nbsp makes them one line
+       tall as in the editor (inside the editor they hold a trailingBreak <br>, so :empty never matches) */
+    :global(.ProseMirror p:empty)::before { content: '\00a0'; }
     :global(.ProseMirror hr)         { border-color: var(--color-hr); border-width: var(--card-border-sz); margin: 0.75rem 0; }
     :global(.ProseMirror code)       { background-color: var(--color-card-border); border-radius: 0.25rem; padding: 0.1rem 0.3rem; }
     :global(.ProseMirror a)          { color: var(--color-pri); text-decoration: underline; }

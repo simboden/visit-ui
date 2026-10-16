@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@mdi/js": "^7.4.47",
-		"@tiptap/core": "3.7.2",
+		"@tiptap/core": "3.31.4",
 		"svelte-highlight": "^7.11.0",
 		"visit-ui": "workspace:*"
 	},

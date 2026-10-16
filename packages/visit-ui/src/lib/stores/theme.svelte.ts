@@ -27,6 +27,9 @@ export interface ThemeSerializer {
 }
 
 const STORAGE_KEY = 'visit-ui-theme';
+// Snapshot of the last applied theme, so the constructor can paint it before a (slow, async)
+// ThemeSerializer has loaded — avoids flashing a built-in theme over the host app's CSS defaults.
+const CACHE_KEY = 'visit-ui-theme-cache';
 
 export const DARK_THEME: Theme = {
 	id: 'dark',
@@ -311,7 +314,12 @@ class ThemeStore {
 
 	constructor() {
 		const id = localStorage.getItem(STORAGE_KEY);
-		const initial = this.themes.find((t) => t.id === id) ?? this.themes[0];
+		const cached = readCache();
+		const initial =
+			(cached && cached.id === id ? cached : null) ?? this.themes.find((t) => t.id === id);
+		// Nothing known for this id (e.g. a DB theme never cached): leave the CSS defaults
+		// (theme.css / host app.css) in place until setSerializer() applies the real theme.
+		if (!initial) return;
 		this.current = initial;
 		this.#original = structuredClone($state.snapshot(initial));
 		this.#apply(initial);
@@ -397,6 +405,7 @@ class ThemeStore {
 		if (idx >= 0) this.themes[idx] = this.current;
 		else this.themes.push(this.current);
 		this.#original = structuredClone($state.snapshot(this.current));
+		writeCache(this.#original);
 	}
 
 	async deleteCurrent() {
@@ -415,6 +424,26 @@ class ThemeStore {
 				document.documentElement.style.setProperty(`--${key}`, value);
 			}
 		}
+		writeCache($state.snapshot(t));
+	}
+}
+
+function readCache(): Theme | null {
+	try {
+		const raw = localStorage.getItem(CACHE_KEY);
+		if (!raw) return null;
+		const t = JSON.parse(raw) as Theme;
+		return t && typeof t.id === 'string' && Array.isArray(t.sections) ? t : null;
+	} catch {
+		return null;
+	}
+}
+
+function writeCache(t: Theme) {
+	try {
+		localStorage.setItem(CACHE_KEY, JSON.stringify(t));
+	} catch {
+		// storage full/unavailable: cache is only an optimization
 	}
 }
 

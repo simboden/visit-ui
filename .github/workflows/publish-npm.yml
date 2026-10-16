@@ -85,6 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write # npm trusted publishing (OIDC): no NPM_TOKEN to expire
 
     steps:
       - name: Checkout

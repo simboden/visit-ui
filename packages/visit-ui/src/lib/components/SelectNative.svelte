@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { HTMLSelectAttributes } from 'svelte/elements';
 	import { mdiChevronDown } from '@mdi/js';
-	import { Icon, Label, LabelError } from './index.js';
+	import { Icon, Label, LabelError, LocOrText } from './index.js';
+	import { lang } from '../stores/lang.svelte.js';
 
 	export type SelectItem = string | number | { value: string | number; name: string };
 
@@ -12,6 +13,8 @@
 		label?: string;
 		error?: string;
 		disabled?: boolean;
+		// lucchetto nella label + campo disabilitato
+		lock?: boolean;
 		class?: string;
 		onchange?: (e: Event) => void;
 	} & Omit<HTMLSelectAttributes, 'value' | 'disabled' | 'class' | 'onchange'>;
@@ -23,6 +26,7 @@
 		label = '',
 		error = '',
 		disabled = false,
+		lock = false,
 		class: className = '',
 		onchange,
 		...restProps
@@ -75,16 +79,16 @@
 </script>
 
 <div class={className}>
-	{#if label}<Label for={id} {label} />{/if}
+	{#if label}<Label for={id} {label} {lock} />{/if}
 	<div class="relative">
 		<select
 			{id}
-			{disabled}
+			disabled={disabled || lock}
 			onchange={handleChange}
 			class={[base, stringValue === '' ? 'text-(--color-text)/50' : 'text-input-text'].join(' ')}
 			{...restProps}
 		>
-			<option value="" disabled selected={stringValue === ''}>{placeholder}</option>
+			<option value="" disabled selected={stringValue === ''}>{lang.loc(placeholder)}</option>
 			{#each selectItems as item (item.value)}
 				<option
 					value={String(item.value)}
@@ -102,6 +106,6 @@
 		</div>
 	</div>
 	{#if error}
-		<LabelError>{error}</LabelError>
+		<LabelError><LocOrText value={error} /></LabelError>
 	{/if}
 </div>

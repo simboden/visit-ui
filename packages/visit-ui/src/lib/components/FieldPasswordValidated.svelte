@@ -5,6 +5,7 @@
 	// Mirrors the FieldEmail → FieldText pattern: same show/hide toggle as FieldPassword.
 	import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
 	import { Icon, Input } from './index.js';
+	import { lang } from '../stores/lang.svelte.js';
 
 	type Props = {
 		value?: string;
@@ -49,13 +50,13 @@
 		if (value.length < minLength) {
 			valid = false;
 			//error = `Too short — use at least ${minLength} characters`;
-			error = tooShortMessage.replace('#minLength', String(minLength) );
+			error = lang.loc(tooShortMessage).replace('#minLength', String(minLength) );
 			return;
 		}
 		if (value.length > maxLength) {
 			valid = false;
 			//error = `Too long — use no more than ${maxLength} characters`;
-			error = tooLongMessage.replace('#maxLength', String(maxLength));
+			error = lang.loc(tooLongMessage).replace('#maxLength', String(maxLength));
 			return;
 		}
 		if (!pattern.test(value)) {

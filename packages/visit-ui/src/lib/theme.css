@@ -1,5 +1,12 @@
 /* Default (Dark) values - overridden at runtime by the theme store */
 @theme {
+	--radius-lg: 0.5rem;
+	--pad: 1rem;
+	--card-border-sz: 1px;
+	--input-border-sz: 1px;
+	--input-focus-sz: 2px;
+	--button-focus-sz: 2px;
+	--navbar-border-sz: 1px;
 	--color-body: #1e2939ff;
 	--color-body1: #12203dff;
 	--color-body2: #101828ff;
@@ -11,11 +18,13 @@
 	--color-head: #dededeff;
 	--color-lab: #e2e2e2ff;
 	--color-title: #ffffffff;
-	--color-code: #f7b047ff;
-	--color-code-bg: #00000033;
+	--color-code: #ffffffff;
+	--color-code-bg: #444c56ff;
+	--color-hero: #f7b047ff;
+	--color-link: #ff7a52ff;
 	--color-card: #51596536;
 	--color-card-border: #75757554;
-	--color-acc: #344252ff;
+	--color-acc: #34425200;
 	--color-acc-hover: #3e5264ff;
 	--color-acc-border: #75757554;
 	--color-input: #364153ff;
@@ -24,14 +33,16 @@
 	--color-input-border: #4e5b6fff;
 	--color-input-focus: #ef562fff;
 	--color-input-error: #ff9191ff;
-	--color-pri: #ef562fff;
-	--color-pri-hover: #b36100ff;
+	--color-pri: #c74828ff;
+	--color-pri-hover: #ff5c33ff;
 	--color-pri-focus: #f7b047ff;
 	--color-pri-text: #ffffffff;
-	--color-sec: #53595bff;
-	--color-sec-hover: #3f4345ff;
-	--color-sec-focus: #606669ff;
+	--color-pri-down: #9e3820ff;
+	--color-sec: #35465bff;
+	--color-sec-hover: #42546aff;
+	--color-sec-focus: #556d8aff;
 	--color-sec-text: #ffffffff;
+	--color-sec-down: #2a3849ff;
 	--color-danger: #dc2626ff;
 	--color-danger-hover: #b91c1cff;
 	--color-danger-focus: #f87171ff;
@@ -40,13 +51,6 @@
 	--color-success: #4ade80ff;
 	--color-warning: #fbbf24ff;
 	--color-error: #f87171ff;
-	--radius-lg: 0.5rem;
-	--pad: 1rem;
-	--card-border-sz: 1px;
-	--input-border-sz: 1px;
-	--input-focus-sz: 1px;
-	--button-focus-sz: 1px;
-	--navbar-border-sz: 1px;
 	--color-chip: #35465bff;
 }
 

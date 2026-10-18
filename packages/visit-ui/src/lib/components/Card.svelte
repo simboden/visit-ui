@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import { twMerge } from 'tailwind-merge';
 	import FC from './FC.svelte';
 
 	type Props = {
@@ -20,7 +21,7 @@
 	].join(' ');
 </script>
 
-<div class="{base} {className}" {...restProps}>
+<div class={twMerge(base, className)} {...restProps}>
 	<FC class={fc_class}>
 		{@render children()}
 	</FC>

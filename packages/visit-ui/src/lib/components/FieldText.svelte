@@ -9,6 +9,7 @@
 		label?: string;
 		placeholder?: string;
 		disabled?: boolean;
+		lock?: boolean;
 		required?: boolean;
 		minLength?: number;
 		maxLength?: number;
@@ -27,6 +28,7 @@
 		label = '',
 		placeholder = '',
 		disabled = false,
+		lock = false,
 		required = false,
 		minLength = 0,
 		maxLength = Infinity,
@@ -58,4 +60,4 @@
 	}
 </script>
 
-<Input type="text" bind:value {label} {placeholder} {disabled} {oninput} {error} {autocomplete} />
+<Input type="text" bind:value {label} {placeholder} {disabled} {lock} {oninput} {error} {autocomplete} />

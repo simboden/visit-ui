@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Tooltip } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+	import LocOrText from './LocOrText.svelte';
 
 	type Props = Tooltip.RootProps & {
 		text?: string | null;
@@ -18,7 +19,7 @@
 				sideOffset={8}
 				class="bg-text text-body shadow-lg z-50 rounded-lg px-3.5 py-2"
 			>
-				{text}
+				<LocOrText value={text} />
 			</Tooltip.Content>
 		</Tooltip.Portal>
 	</Tooltip.Root>

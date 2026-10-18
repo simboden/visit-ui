@@ -15,6 +15,9 @@ export interface Theme {
 	icon: string;
 	dark: boolean;
 	sections: ThemeSection[];
+	// Theme shown to users who never picked one (no id in localStorage). At most one theme should
+	// have it; when none does, the first theme of the list is used.
+	isDefault?: boolean;
 }
 
 export interface ThemeSerializer {
@@ -24,6 +27,9 @@ export interface ThemeSerializer {
 	// store applies it back to `current`/`themes` so subsequent saves update the right record.
 	save(theme: Theme): Promise<string | void> | string | void;
 	delete?(id: string): Promise<void> | void;
+	// Persist `id` as the only default theme (see Theme.isDefault). Optional: when missing,
+	// ThemeManager hides its "Default" button.
+	setDefault?(id: string): Promise<void> | void;
 }
 
 const STORAGE_KEY = 'visit-ui-theme';
@@ -69,7 +75,9 @@ export const DARK_THEME: Theme = {
 				'color-lab': '#e2e2e2ff',
 				'color-title': '#ffffffff',
 				'color-code': '#ffffffff',
-				'color-code-bg': '#444c56ff'
+				'color-code-bg': '#444c56ff',
+				'color-hero': '#f7b047ff',
+				'color-link': '#ff7a52ff'
 			}
 		},
 		{
@@ -104,7 +112,8 @@ export const DARK_THEME: Theme = {
 				'color-pri': '#c74828ff',
 				'color-pri-hover': '#ff5c33ff',
 				'color-pri-focus': '#f7b047ff',
-				'color-pri-text': '#ffffffff'
+				'color-pri-text': '#ffffffff',
+				'color-pri-down': '#9e3820ff'
 			}
 		},
 		{
@@ -113,7 +122,8 @@ export const DARK_THEME: Theme = {
 				'color-sec': '#35465bff',
 				'color-sec-hover': '#42546aff',
 				'color-sec-focus': '#556d8aff',
-				'color-sec-text': '#ffffffff'
+				'color-sec-text': '#ffffffff',
+				'color-sec-down': '#2a3849ff'
 			}
 		},
 		{
@@ -181,7 +191,9 @@ export const LIGHT_THEME: Theme = {
 				'color-lab': '#374151ff',
 				'color-title': '#000000ff',
 				'color-code': '#c2410cff',
-				'color-code-bg': '#00000010'
+				'color-code-bg': '#00000010',
+				'color-hero': '#c2410cff',
+				'color-link': '#d9481fff'
 			}
 		},
 		{
@@ -216,7 +228,8 @@ export const LIGHT_THEME: Theme = {
 				'color-pri': '#ef562fff',
 				'color-pri-hover': '#d9481fff',
 				'color-pri-focus': '#ef562fff',
-				'color-pri-text': '#ffffffff'
+				'color-pri-text': '#ffffffff',
+				'color-pri-down': '#b93a17ff'
 			}
 		},
 		{
@@ -225,7 +238,8 @@ export const LIGHT_THEME: Theme = {
 				'color-sec': 'rgb(201, 205, 210)',
 				'color-sec-hover': '#e4e9f0ff',
 				'color-sec-focus': '#ced3d9ff',
-				'color-sec-text': 'rgb(73, 73, 73)'
+				'color-sec-text': 'rgb(73, 73, 73)',
+				'color-sec-down': '#b4b9c0ff'
 			}
 		},
 		{
@@ -303,7 +317,14 @@ function mergeWithDefault(loaded: Theme, base: Theme): Theme {
 		sections.push({ name, vars });
 	}
 
-	return { id: loaded.id, title: loaded.title, icon: loaded.icon, dark: loaded.dark, sections };
+	return {
+		id: loaded.id,
+		title: loaded.title,
+		icon: loaded.icon,
+		dark: loaded.dark,
+		sections,
+		...(loaded.isDefault ? { isDefault: true } : {})
+	};
 }
 
 class ThemeStore {
@@ -329,6 +350,10 @@ class ThemeStore {
 		return this.#serializer !== null;
 	}
 
+	get canSetDefault() {
+		return !!this.#serializer?.setDefault;
+	}
+
 	setCurrent(id: string) {
 		const t = this.themes.find((t) => t.id === id);
 		if (!t) return;
@@ -350,7 +375,12 @@ class ThemeStore {
 			if (!loaded.length) return;
 			this.themes = loaded.map((t) => mergeWithDefault(t, t.dark ? DARK_THEME : LIGHT_THEME));
 			const id = localStorage.getItem(STORAGE_KEY);
-			const match = this.themes.find((t) => t.id === id) ?? this.themes[0];
+			// the default is not written to localStorage: users who never chose a theme keep
+			// following it if it changes later
+			const match =
+				this.themes.find((t) => t.id === id) ??
+				this.themes.find((t) => t.isDefault) ??
+				this.themes[0];
 			this.current = match;
 			this.#original = structuredClone($state.snapshot(match));
 			this.#apply(match);
@@ -390,6 +420,7 @@ class ThemeStore {
 		const copy = structuredClone($state.snapshot(this.current));
 		copy.id = crypto.randomUUID();
 		copy.title = 'New theme';
+		delete copy.isDefault;
 		this.themes.push(copy);
 		this.setCurrent(copy.id);
 	}
@@ -408,6 +439,18 @@ class ThemeStore {
 		writeCache(this.#original);
 	}
 
+	async makeCurrentDefault() {
+		if (!this.#serializer?.setDefault) return;
+		const id = this.current.id;
+		await this.#serializer.setDefault(id);
+		for (const t of this.themes) {
+			if (t.id === id) t.isDefault = true;
+			else delete t.isDefault;
+		}
+		this.current.isDefault = true;
+		this.#original.isDefault = true;
+	}
+
 	async deleteCurrent() {
 		if (!this.#serializer?.delete || this.themes.length <= 1) return;
 		const id = this.current.id;
@@ -419,6 +462,8 @@ class ThemeStore {
 	}
 
 	#apply(t: Theme) {
+		// enables Tailwind `dark:` utilities in host apps declaring `@custom-variant dark (&:where(.dark, .dark *))`
+		document.documentElement.classList.toggle('dark', t.dark);
 		for (const section of t.sections) {
 			for (const [key, value] of Object.entries(section.vars)) {
 				document.documentElement.style.setProperty(`--${key}`, value);

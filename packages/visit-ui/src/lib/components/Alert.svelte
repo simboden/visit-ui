@@ -1,33 +1,36 @@
 <script lang="ts">
-	import { mdiAlertCircleOutline, mdiCheckCircleOutline } from '@mdi/js';
+	import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiInformationOutline } from '@mdi/js';
 	import type { Snippet } from 'svelte';
-	import { FR, Icon, Spring } from './index.js';
+	import { FR, Icon, LocOrText, Spring } from './index.js';
 
 	type Props = {
-		type: 'ok' | 'error' | 'warn';
+		type: 'ok' | 'error' | 'warn' | 'info';
+		// testo letterale, o "#text_id" per una traduzione (vedi LocOrText)
 		text?: string;
+		iconSize?: string;
 		children?: Snippet;
 		class?: string;
 	};
 
-	let { type, text = '', children, class: className = '' }: Props = $props();
+	let { type, text = '', iconSize = '2rem', children, class: className = '' }: Props = $props();
 
 	const iconMap = {
-		ok:    { icon: mdiCheckCircleOutline,  color: 'text-green-500'  },
-		error: { icon: mdiAlertCircleOutline,  color: 'text-red-500'    },
-		warn:  { icon: mdiAlertCircleOutline,  color: 'text-yellow-500' }
+		ok:    { icon: mdiCheckCircleOutline,  color: 'text-success', bg: 'bg-success/10 border-success/30' },
+		error: { icon: mdiAlertCircleOutline,  color: 'text-error',   bg: 'bg-error/10   border-error/30'   },
+		warn:  { icon: mdiAlertCircleOutline,  color: 'text-warning', bg: 'bg-warning/10 border-warning/30' },
+		info:  { icon: mdiInformationOutline,  color: 'text-info',    bg: 'bg-info/10    border-info/30'    }
 	};
 
-	const { icon, color } = $derived(iconMap[type]);
+	const { icon, color, bg } = $derived(iconMap[type]);
 </script>
 
 <FR
-	class="bg-card rounded-lg border border-card-border p-4 gap-3 {className}"
+	class="rounded-lg border p-4 gap-3 {bg} {className}"
 >
 	<Spring />
-	<Icon {icon} size="2rem" class={color} />
+	<Icon {icon} size={iconSize} class="shrink-0 {color}" />
 	{#if text}
-		<p class="whitespace-pre-line">{text}</p>
+		<p class="whitespace-pre-line"><LocOrText value={text} /></p>
 	{/if}
 	{#if children}
 		{@render children()}

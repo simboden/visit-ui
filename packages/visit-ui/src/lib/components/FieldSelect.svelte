@@ -9,6 +9,7 @@
 		label?: string;
 		placeholder?: string;
 		disabled?: boolean;
+		lock?: boolean;
 		required?: boolean;
 		requiredMessage?: string;
 	};
@@ -21,6 +22,7 @@
 		label = '',
 		placeholder = 'Select...',
 		disabled = false,
+		lock = false,
 		required = true,
 		requiredMessage = 'Selection required'
 	}: Props = $props();
@@ -36,4 +38,4 @@
 	}
 </script>
 
-<Select {items} bind:value {label} {placeholder} {disabled} {error} {onchange} />
+<Select {items} bind:value {label} {placeholder} {disabled} {lock} {error} {onchange} />

@@ -72,6 +72,14 @@ class LangStore {
 		return this.#entries[text_id]?.values[this.current] ?? text_id;
 	}
 
+	// per gli attributi stringa (placeholder, aria-label, messaggi di errore...) che non possono
+	// contenere un <LocText>: "#text_id" -> t(text_id), altrimenti il valore cosi' com'e'.
+	// Stessa convenzione di LocOrText, ma senza edit in-place.
+	loc(value?: string | null): string {
+		if (!value) return '';
+		return value.startsWith('#') ? this.t(value.slice(1)) : value;
+	}
+
 	// valori per tutte le lingue di un text_id (usato dal dialog di edit di LocText). Garantisce
 	// sempre una chiave per ogni lingua configurata (default '') anche se il text_id non ha ancora
 	// una entry salvata, cosi' bind:value sui campi del dialog non riceve mai undefined.

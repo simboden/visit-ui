@@ -21,13 +21,19 @@
 				<H2>Headings</H2>
 				<Radio options={viewOptions} bind:value={headingsView} class="mr-4" />
 			</FS>
-			<p>Headings (<Code>H1</Code>-<Code>H4</Code>) use the <Code>color-head</Code> theme variable.</p>
+			<p>
+				Headings (<Code>H1</Code>-<Code>H4</Code>) use the <Code>color-head</Code> theme variable.
+				Text can be given as children or via <Code>label</Code> (literal or <Code>"#text_id"</Code>);
+				<Code>class</Code> overrides the base classes (tailwind-merge), e.g.
+				<Code>class="text-hero"</Code>.
+			</p>
 			{#if headingsView === 'preview'}
 				<FC class="gap-2">
 					<H1>H1 - Main title</H1>
 					<H2>H2 - Section title</H2>
 					<H3>H3 - Subsection title</H3>
 					<H4>H4 - Minor title</H4>
+					<H3 class="text-hero" label="#demo.greeting" />
 				</FC>
 			{:else}
 				<CodeBlock
@@ -38,7 +44,8 @@ code={`<script lang="ts">
 <H1>H1 - Main title</H1>
 <H2>H2 - Section title</H2>
 <H3>H3 - Subsection title</H3>
-<H4>H4 - Minor title</H4>`}
+<H4>H4 - Minor title</H4>
+<H3 class="text-hero" label="#demo.greeting" />`}
 				/>
 			{/if}
 		</Card>
@@ -85,18 +92,23 @@ code={`<Dimmed>This is a dimmed text paragraph.</Dimmed>`}
 				<H2>Link</H2>
 				<Radio options={viewOptions} bind:value={linkView} class="mr-4" />
 			</FS>
-			<p><Code>Link</Code> uses the <Code>color-pri</Code> theme variable.</p>
+			<p>
+				<Code>Link</Code> uses the <Code>color-link</Code> theme variable. Text as children or via
+				<Code>label</Code> (literal or <Code>"#text_id"</Code>).
+			</p>
 			{#if linkView === 'preview'}
 				<FR class="gap-4">
 					<Link href="/">Internal link</Link>
 					<Link href="https://svelte.dev" target="_blank" rel="noopener noreferrer"
 						>External link</Link
 					>
+					<Link href="/" label="#demo.greeting" />
 				</FR>
 			{:else}
 				<CodeBlock
 code={`<Link href="/">Internal link</Link>
-<Link href="https://svelte.dev" target="_blank" rel="noopener noreferrer">External link</Link>`}
+<Link href="https://svelte.dev" target="_blank" rel="noopener noreferrer">External link</Link>
+<Link href="/" label="#demo.greeting" />`}
 				/>
 			{/if}
 		</Card>
@@ -150,13 +162,18 @@ code={`<CodeBlock
 			</FS>
 			<p>
 				<Code>Label</Code> is the field label used by input components. It uses the
-				<Code>color-lab</Code> theme variable.
+				<Code>color-lab</Code> theme variable. <Code>label</Code> accepts literal text or
+				<Code>"#text_id"</Code>; <Code>lock</Code> adds a lock icon on the right (Input, TextArea,
+				Select, SelectNative, AutoComplete, FieldText, FieldTextArea and FieldSelect forward it and
+				disable the field).
 			</p>
 			{#if labelView === 'preview'}
 				<Label>Field label</Label>
+				<Label label="Locked field" lock />
 			{:else}
 				<CodeBlock
-code={`<Label>Field label</Label>`}
+code={`<Label>Field label</Label>
+<Label label="Locked field" lock />`}
 				/>
 			{/if}
 		</Card>

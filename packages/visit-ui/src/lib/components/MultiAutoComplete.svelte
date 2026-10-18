@@ -3,8 +3,9 @@
 	// values binds to an array of selected item ids.
 	// Selected items are shown as Chip-styled tags above the input.
 	// lock: shows a lock icon and makes the field read-only.
-	import { mdiClose, mdiLock } from '@mdi/js';
-	import { Icon, Label, Spring } from './index.js';
+	import { mdiClose } from '@mdi/js';
+	import { Icon, Label } from './index.js';
+	import { lang } from '../stores/lang.svelte.js';
 
 	type Item = { id: string; display: string };
 
@@ -97,10 +98,7 @@
 
 <div class="relative {className}">
 	{#if label}
-		<Label for={id} class="flex items-center">
-			{label}
-			{#if lock}<Spring /><Icon icon={mdiLock} size="1rem" class="text-text/50" />{/if}
-		</Label>
+		<Label for={id} {label} {lock} />
 	{/if}
 
 	{#if selectedItems.length > 0}
@@ -130,7 +128,7 @@
 			{id}
 			type="text"
 			disabled={disabled || lock}
-			{placeholder}
+			placeholder={lang.loc(placeholder)}
 			value={search}
 			oninput={on_input}
 			onfocus={on_focus}

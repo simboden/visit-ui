@@ -38,7 +38,7 @@
 							toast.show({
 								title: 'Update available',
 								description: 'ToastPanel renders the active toasts in the top-right corner of the screen. It is mounted once, in the root layout. To show a toast, call one of the methods on the toast store from anywhere in the app.',
-								color: '#info'
+								color: 'info'
 							})}
 					> Custom </Button>
 				</FR>

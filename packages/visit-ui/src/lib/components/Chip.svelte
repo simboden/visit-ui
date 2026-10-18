@@ -1,19 +1,22 @@
 <script lang="ts">
+	import { twMerge } from 'tailwind-merge';
+	import LocOrText from './LocOrText.svelte';
 	import Tooltip from './Tooltip.svelte';
 
 	type Props = {
+		// text e title: testo letterale, o "#text_id" per una traduzione (vedi LocOrText)
 		text: string | number;
 		title?: string;
-		color?: string;       // CSS color value — overrides color-chip theme var
+		color?: string;       // CSS color value — overrides the background class
 		class?: string;
 		onclick?: () => void;
 	};
 
 	let { text, title, color, class: className = '', onclick }: Props = $props();
 
-	// Inline style: use caller-supplied color if provided, otherwise fall back to the
-	// color-chip theme variable. Inline style wins over Tailwind classes for specificity.
-	const bgStyle = $derived(color ? `background-color: ${color}` : 'background-color: var(--color-chip)');
+	// Background comes from the bg-chip class, so callers can swap it via class (e.g. "bg-chip1");
+	// inline style only when an explicit color is passed.
+	const base = 'bg-chip text-lab font-bold min-w-[50px] px-2 py-1 rounded cursor-pointer text-sm hover:brightness-125';
 </script>
 
 <!--
@@ -25,11 +28,11 @@
 	{#snippet child({ props })}
 		<button
 			{...props}
-			style={bgStyle}
-			class="text-lab font-bold min-w-[50px] px-2 py-1 rounded cursor-pointer text-sm hover:brightness-125 {className}"
+			style={color ? `background-color: ${color}` : undefined}
+			class={twMerge(base, className)}
 			{onclick}
 		>
-			{text}
+			<LocOrText value={String(text)} />
 		</button>
 	{/snippet}
 </Tooltip>

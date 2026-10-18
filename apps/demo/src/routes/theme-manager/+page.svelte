@@ -35,7 +35,9 @@
 				{ key: 'color-lab', usedIn: 'Label, Chip text, FieldSearch icon, MultiAutoComplete chip label' },
 				{ key: 'color-title', usedIn: 'Reserved for app use' },
 				{ key: 'color-code', usedIn: 'Code — inline code text' },
-				{ key: 'color-code-bg', usedIn: 'Code — inline code background' }
+				{ key: 'color-code-bg', usedIn: 'Code — inline code background' },
+				{ key: 'color-hero', usedIn: 'Reserved for app use — occasional accent text (text-hero)' },
+				{ key: 'color-link', usedIn: 'Link — color' }
 			]
 		},
 		{
@@ -67,10 +69,11 @@
 		{
 			label: 'Primary',
 			vars: [
-				{ key: 'color-pri', usedIn: 'Button/ButtonLink primary — background/text; Link — color; Check — checked bg; Radio — selected dot; Splitter — divider hover' },
+				{ key: 'color-pri', usedIn: 'Button/ButtonLink primary — background/text; Check — checked bg; Radio — selected dot; Splitter — divider hover' },
 				{ key: 'color-pri-hover', usedIn: 'Button/ButtonLink primary — hover background' },
 				{ key: 'color-pri-focus', usedIn: 'Button/ButtonLink primary — focus ring' },
-				{ key: 'color-pri-text', usedIn: 'Button/ButtonLink primary filled — text; Check — checkmark icon' }
+				{ key: 'color-pri-text', usedIn: 'Button/ButtonLink primary filled — text; Check — checkmark icon' },
+				{ key: 'color-pri-down', usedIn: 'Button/ButtonLink primary — pressed background' }
 			]
 		},
 		{
@@ -79,7 +82,8 @@
 				{ key: 'color-sec', usedIn: 'Button/ButtonLink secondary filled — background' },
 				{ key: 'color-sec-hover', usedIn: 'Button/ButtonLink secondary — hover background' },
 				{ key: 'color-sec-focus', usedIn: 'Button/ButtonLink secondary — focus ring' },
-				{ key: 'color-sec-text', usedIn: 'Button/ButtonLink secondary filled — text' }
+				{ key: 'color-sec-text', usedIn: 'Button/ButtonLink secondary filled — text' },
+				{ key: 'color-sec-down', usedIn: 'Button/ButtonLink secondary — pressed background' }
 			]
 		},
 		{
@@ -94,10 +98,10 @@
 		{
 			label: 'Toast',
 			vars: [
-				{ key: 'color-info', usedIn: 'Toast — info variant background and border' },
-				{ key: 'color-success', usedIn: 'Toast — success variant background and border' },
-				{ key: 'color-warning', usedIn: 'Toast — warning variant background and border' },
-				{ key: 'color-error', usedIn: 'Toast — error variant background and border' }
+				{ key: 'color-info', usedIn: 'Toast, Alert — info variant' },
+				{ key: 'color-success', usedIn: 'Toast, Alert — success variant' },
+				{ key: 'color-warning', usedIn: 'Toast, Alert — warning variant' },
+				{ key: 'color-error', usedIn: 'Toast, Alert — error variant' }
 			]
 		},
 		{
@@ -169,7 +173,20 @@ code={`[+layout.svelte]
 				By default the theme store holds <Code>DARK_THEME</Code> and
 				<Code>LIGHT_THEME</Code>. Call <Code>theme.setSerializer(serializer)</Code> to supply a
 				custom theme list and persist changes. The serializer must implement
-				<Code>load()</Code>, <Code>save(theme)</Code> and optionally <Code>delete(id)</Code>.
+				<Code>load()</Code>, <Code>save(theme)</Code> and optionally <Code>delete(id)</Code> and
+				<Code>setDefault(id)</Code>.
+			</p>
+			<p>
+				<b>Default theme.</b> A user who never picked a theme gets the one loaded with
+				<Code>isDefault: true</Code>, else the first of the list. When the serializer implements
+				<Code>setDefault(id)</Code>, <Code>ThemeManager</Code> shows a "Set as default" button that
+				calls it (<Code>theme.makeCurrentDefault()</Code>). The default is never written to the
+				user's localStorage, so changing it reaches everyone who never chose.
+			</p>
+			<p>
+				The store also toggles the <Code>dark</Code> class on <Code>&lt;html&gt;</Code> according to
+				the current theme's <Code>dark</Code> flag, so Tailwind <Code>dark:</Code> utilities work with
+				<Code>@custom-variant dark (&amp;:where(.dark, .dark *))</Code>.
 			</p>
 			<CodeBlock
 code={`import { theme } from 'visit-ui';
@@ -188,6 +205,10 @@ theme.setSerializer({
   delete(id) {
     const all = this.load().filter((x) => x.id !== id);
     localStorage.setItem('my-themes', JSON.stringify(all));
+  },
+  // optional: persist the default (load() must return it as isDefault: true)
+  setDefault(id) {
+    localStorage.setItem('my-default-theme', id);
   }
 });`}
 			/>

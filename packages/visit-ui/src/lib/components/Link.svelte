@@ -2,26 +2,33 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { resolveHref } from '../utils/routeHref.js';
+	import LocOrText from './LocOrText.svelte';
 
 	type Props = {
 		href?: string;
 		onclick?: () => void;
-		children: Snippet;
+		// testo letterale, o "#text_id" per una traduzione (vedi LocOrText); alternativa a children
+		label?: string;
+		children?: Snippet;
 		class?: string;
 	} & Omit<HTMLAnchorAttributes, 'href' | 'onclick' | 'class'>;
 
-	let { href, onclick, children, class: className = '', ...restProps }: Props = $props();
+	let { href, onclick, label, children, class: className = '', ...restProps }: Props = $props();
 	const resolvedHref = $derived(resolveHref(href));
 
-	const base = 'text-pri font-medium no-underline hover:underline transition-all duration-200';
+	const base = 'text-link font-medium no-underline hover:underline transition-all duration-200';
 </script>
+
+{#snippet content()}
+	{#if label}<LocOrText value={label} />{:else}{@render children?.()}{/if}
+{/snippet}
 
 {#if href}
 	<a href={resolvedHref} class="{base} {className}" {...restProps}>
-		{@render children()}
+		{@render content()}
 	</a>
 {:else}
 	<button type="button" {onclick} class="{base} {className}">
-		{@render children()}
+		{@render content()}
 	</button>
 {/if}

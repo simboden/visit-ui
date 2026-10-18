@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { HTMLTextareaAttributes } from 'svelte/elements';
+	import { lang } from '../stores/lang.svelte.js';
 	import Label from './Label.svelte';
 	import LabelError from './LabelError.svelte';
+	import LocOrText from './LocOrText.svelte';
 
 	type Props = {
 		value?: string;
@@ -10,6 +12,8 @@
 		autosize?: boolean;
 		placeholder?: string;
 		disabled?: boolean;
+		// lucchetto nella label + campo disabilitato
+		lock?: boolean;
 		error?: string;
 		class?: string;
 	} & Omit<HTMLTextareaAttributes, 'value' | 'rows' | 'placeholder' | 'disabled' | 'class'>;
@@ -21,6 +25,7 @@
 		autosize = false,
 		placeholder = '',
 		disabled = false,
+		lock = false,
 		error = '',
 		class: className = '',
 		...restProps
@@ -67,18 +72,18 @@
 </script>
 
 <div class={className}>
-	{#if label}<Label for={id} {label} />{/if}
+	{#if label}<Label for={id} {label} {lock} />{/if}
 	<textarea
 		{id}
 		{rows}
-		{placeholder}
-		{disabled}
+		placeholder={lang.loc(placeholder)}
+		disabled={disabled || lock}
 		bind:value
 		bind:this={textareaEl}
 		class={[base, autosize && 'overflow-hidden'].filter(Boolean).join(' ')}
 		{...restProps}
 	></textarea>
 	{#if error}
-		<LabelError>{error}</LabelError>
+		<LabelError><LocOrText value={error} /></LabelError>
 	{/if}
 </div>

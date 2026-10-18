@@ -50,14 +50,15 @@
 			'rounded-lg',
 			'border-[length:var(--input-focus-sz)]',
 			'p-[length:var(--pad)]',
-			'shadow-lg'
+			'shadow-lg',
+			'backdrop-blur-sm'
 		].join(' '),
 		variants: {
 			color: {
-				info: ['bg-info', 'border-info'].join(' '),
-				success: ['bg-success', 'border-success'].join(' '),
-				warning: ['bg-warning', 'border-warning'].join(' '),
-				error: ['bg-error', 'border-error'].join(' ')
+				info: ['bg-info/80', 'border-info'].join(' '),
+				success: ['bg-success/80', 'border-success'].join(' '),
+				warning: ['bg-warning/80', 'border-warning'].join(' '),
+				error: ['bg-error/80', 'border-error'].join(' ')
 			} satisfies Record<ToastColor, string>
 		}
 	});
@@ -65,14 +66,14 @@
 
 <div class={containerStyles({ color, class: className })} role="status">
 	{#if resolvedIcon}
-		<Icon icon={resolvedIcon} size="1.5rem" class="shrink-0" />
+		<Icon icon={resolvedIcon} size="3rem" class="shrink-0" />
 	{/if}
 	<div class="flex grow flex-col gap-0.5">
 		{#if title}
 			<div class="text-xl font-bold leading-tight"><LocOrText value={title} /></div>
 		{/if}
 		{#if description}
-			<div class="opacity-70"><LocOrText value={description} /></div>
+			<div class="font-normal"><LocOrText value={description} /></div>
 		{/if}
 		{@render children?.()}
 	</div>

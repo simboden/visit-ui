@@ -14,11 +14,15 @@
 	let iconView = $state<string | number | null>('preview');
 	let tooltipView = $state<string | number | null>('preview');
 	let sizeView = $state<string | number | null>('preview');
+	let labelView = $state<string | number | null>('preview');
 </script>
 
 <Page title="Button">
 	<FC class="gap-8">
-		<p>button provide the following parameters:</p>
+		<p>
+			button provide the following parameters. While pressed, filled buttons use
+			<Code>color-pri-down</Code> / <Code>color-sec-down</Code> (outlined and ghost at 40%).
+		</p>
 
 		<Card>
 			<FS>
@@ -122,6 +126,30 @@ code={`<script lang="ts">
 				<Button class="w-32" title="Tooltip text">with tooltip</Button>
 			{:else}
 				<CodeBlock code={`<Button class="w-32" title="Tooltip text">with tooltip</Button>`} />
+			{/if}
+		</Card>
+
+		<Card>
+			<FS>
+				<H2>label</H2>
+				<Radio options={viewOptions} bind:value={labelView} class="mr-4" />
+			</FS>
+			<p>
+				<Code>label</Code> is an alternative to children: literal text, or <Code>"#text_id"</Code>
+				for a localized text. <Code>title</Code> accepts <Code>"#text_id"</Code> too. Same props on
+				<Code>ButtonLink</Code>; <Code>label</Code> also on <Code>Link</Code>,
+				<Code>MenuItem</Code>, <Code>H1</Code>-<Code>H4</Code>.
+			</p>
+			{#if labelView === 'preview'}
+				<FR>
+					<Button label="plain label" />
+					<Button label="#demo.greeting" title="#demo.greeting" color="secondary" />
+				</FR>
+			{:else}
+				<CodeBlock
+code={`<Button label="plain label" />
+<Button label="#demo.greeting" title="#demo.greeting" color="secondary" />`}
+				/>
 			{/if}
 		</Card>
 

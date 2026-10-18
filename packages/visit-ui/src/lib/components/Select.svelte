@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Select } from 'bits-ui';
 	import { mdiCheck, mdiChevronDown } from '@mdi/js';
-	import { Icon, Label, LabelError } from './index.js';
+	import { Icon, Label, LabelError, LocOrText } from './index.js';
+	import { lang } from '../stores/lang.svelte.js';
 
 	export type SelectItem = string | number | { value: string | number; name: string };
 
@@ -12,6 +13,8 @@
 		label?: string;
 		error?: string;
 		disabled?: boolean;
+		// lucchetto nella label + campo disabilitato
+		lock?: boolean;
 		class?: string;
 		onchange?: () => void;
 	};
@@ -23,6 +26,7 @@
 		label = '',
 		error = '',
 		disabled = false,
+		lock = false,
 		class: className = '',
 		onchange
 	}: Props = $props();
@@ -110,16 +114,16 @@
 </script>
 
 <div class={className}>
-	{#if label}<Label for={id} {label} />{/if}
+	{#if label}<Label for={id} {label} {lock} />{/if}
 	<Select.Root
 		type="single"
 		value={stringValue}
 		onValueChange={handleValueChange}
-		{disabled}
+		disabled={disabled || lock}
 		items={selectItems.map((item) => ({ value: String(item.value), label: item.name }))}
 	>
 		<Select.Trigger {id} class={triggerBase}>
-			<Select.Value class="truncate" {placeholder}>
+			<Select.Value class="truncate" placeholder={lang.loc(placeholder)}>
 				{#snippet children({ selection, placeholder })}
 					{#if selection.type === 'single' && selection.selected}
 						{selection.selected.label}
@@ -155,6 +159,6 @@
 		</Select.Portal>
 	</Select.Root>
 	{#if error}
-		<LabelError>{error}</LabelError>
+		<LabelError><LocOrText value={error} /></LabelError>
 	{/if}
 </div>

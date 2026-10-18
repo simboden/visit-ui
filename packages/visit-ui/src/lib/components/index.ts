@@ -54,6 +54,7 @@ export { default as SidebarGroup } from './SidebarGroup.svelte';
 export { default as SidebarDropdown } from './SidebarDropdown.svelte';
 export { default as Menu } from './Menu.svelte';
 export { default as MenuItem } from './MenuItem.svelte';
+export { default as MenuSeparator } from './MenuSeparator.svelte';
 export { default as Toast } from './Toast.svelte';
 export { default as ToastPanel } from './ToastPanel.svelte';
 export { default as Spring } from './Spring.svelte';

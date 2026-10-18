@@ -11,7 +11,7 @@ This is a pnpm workspace with two packages:
 
 The demo imports the library's shared theme via `@import 'visit-ui/theme.css'` (exported from `packages/visit-ui/package.json`'s `./theme.css` export, built from `packages/visit-ui/src/lib/theme.css`).
 
-**Version control is SVN, not git** — there is a `.svn` directory at the repo root. Use `svn` commands (`svn status`, `svn diff`, `svn add`, `svn commit`) for VCS operations.
+**Version control is git** (branch `master`, remote on GitHub). Pushing to master triggers CI: the version is bumped from the commit message prefix (`fix:`/`patch:` → patch, `feat:`/`minor:` → minor), the package is published to npm and the demo deployed to GitHub Pages.
 
 ## Commands
 

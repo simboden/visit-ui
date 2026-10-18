@@ -2,10 +2,13 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { tv } from 'tailwind-variants';
-	import { Icon, Tooltip } from './index.js';
+	import { Icon, LocOrText, Tooltip } from './index.js';
 	import { resolveHref } from '../utils/routeHref.js';
 
 	type Props = {
+		// label e title: testo letterale, o "#text_id" per una traduzione (vedi LocOrText);
+		// label e' un'alternativa a children
+		label?: string;
 		title?: string;
 		href: string;
 		open_in_new_tab?: boolean;
@@ -18,6 +21,7 @@
 	} & Omit<HTMLAnchorAttributes, 'href' | 'target' | 'rel' | 'class'>;
 
 	let {
+		label,
 		title,
 		href,
 		open_in_new_tab = false,
@@ -65,15 +69,15 @@
 			}
 		},
 		compoundVariants: [
-			{ variant: 'filled',    color: 'primary',   class: 'bg-pri                  text-pri-text       hover:bg-pri-hover      focus:ring-pri-focus'   },
-			{ variant: 'filled',    color: 'secondary', class: 'bg-sec                  text-sec-text       hover:bg-sec-hover      focus:ring-sec-focus'   },
+			{ variant: 'filled',    color: 'primary',   class: 'bg-pri                  text-pri-text       hover:bg-pri-hover      focus:ring-pri-focus    active:bg-pri-down'},
+			{ variant: 'filled',    color: 'secondary', class: 'bg-sec                  text-sec-text       hover:bg-sec-hover      focus:ring-sec-focus    active:bg-sec-down'},
 			{ variant: 'filled',    color: 'danger',    class: 'bg-danger               text-danger-text    hover:bg-danger-hover   focus:ring-danger-focus'},
-			{ variant: 'outlined',  color: 'primary',   class: 'bg-pri/30               text-pri            hover:bg-pri/10         focus:ring-pri-focus,   border-2 border-pri'   },
-			{ variant: 'outlined',  color: 'secondary', class: 'bg-sec/30               text-sec            hover:bg-sec/10         focus:ring-sec-focus    border-2 border-sec'   },
+			{ variant: 'outlined',  color: 'primary',   class: 'bg-pri/30               text-pri            hover:bg-pri/10         focus:ring-pri-focus    border-2 border-pri     active:bg-pri-down/40'},
+			{ variant: 'outlined',  color: 'secondary', class: 'bg-sec/30               text-text           hover:bg-sec/10         focus:ring-sec-focus    border-2 border-sec     active:bg-sec-down/40'},
 			{ variant: 'outlined',  color: 'danger',    class: 'bg-danger/30            text-danger         hover:bg-danger/10      focus:ring-danger-focus border-2 border-danger'},
-			{ variant: 'ghost',     color: 'primary',   class: '                        text-pri            hover:bg-pri/10         focus:ring-pri-focus'   },
-			{ variant: 'ghost',     color: 'secondary', class: '                        text-sec            hover:bg-sec/10         focus:ring-sec-focus'   },
-			{ variant: 'ghost',     color: 'danger',    class: '                        text-danger         hover:bg-danger/10      focus:ring-danger-focus'}
+			{ variant: 'ghost',     color: 'primary',   class: '                        text-pri            hover:bg-pri/30         focus:ring-pri-focus    active:bg-pri-down/40'},
+			{ variant: 'ghost',     color: 'secondary', class: '                        text-text           hover:bg-sec/30         focus:ring-sec-focus    active:bg-sec-down/40'},
+			{ variant: 'ghost',     color: 'danger',    class: '                        text-danger         hover:bg-danger/30      focus:ring-danger-focus'}
 		]
 	});
 </script>
@@ -89,7 +93,7 @@
 			class={styles({ size, variant, color, class: className })}
 		>
 			{#if icon} <Icon {icon} /> {/if}
-            {@render children?.()}
+			{#if label}<LocOrText value={label} />{:else}{@render children?.()}{/if}
 
 		</a>
 	{/snippet}

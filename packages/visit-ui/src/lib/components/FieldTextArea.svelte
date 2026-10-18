@@ -9,6 +9,7 @@
 		placeholder?: string;
 		rows?: number;
 		disabled?: boolean;
+		lock?: boolean;
 		required?: boolean;
 		minLength?: number;
 		maxLength?: number;
@@ -25,6 +26,7 @@
 		placeholder = '',
 		rows = 4,
 		disabled = false,
+		lock = false,
 		required = false,
 		minLength = 0,
 		maxLength = Infinity,
@@ -50,4 +52,4 @@
 	}
 </script>
 
-<TextArea bind:value {label} {placeholder} {rows} {disabled} {error} {oninput} />
+<TextArea bind:value {label} {placeholder} {rows} {disabled} {lock} {error} {oninput} />

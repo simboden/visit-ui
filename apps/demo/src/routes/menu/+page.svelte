@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Card, Code, FC, FS, H2, Menu, MenuItem, Page, Radio } from 'visit-ui';
+	import { Button, Card, Code, FC, FS, H2, Menu, MenuItem, MenuSeparator, Page, Radio } from 'visit-ui';
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 
 	const viewOptions = ['preview', 'code'];
@@ -28,8 +28,10 @@
 				<li><Code>class</Code>: extra CSS classes applied to the menu content.</li>
 				<li>
 					<Code>MenuItem</Code> props: <Code>onSelect</Code>, <Code>disabled</Code>,
-					<Code>closeOnSelect</Code> (default true), <Code>class</Code>.
+					<Code>closeOnSelect</Code> (default true), <Code>label</Code> (text or
+					<Code>"#text_id"</Code>, alternative to children), <Code>class</Code>.
 				</li>
+				<li><Code>MenuSeparator</Code>: horizontal divider (<Code>color-hr</Code>).</li>
 			</ul>
 			{#if menuView === 'preview'}
 				<FC class="mt-4">
@@ -40,14 +42,15 @@
 						<MenuItem onSelect={() => (lastAction = 'Edit')}                > Edit      </MenuItem>
 						<MenuItem onSelect={() => (lastAction = 'Duplicate')}           > Duplicate </MenuItem>
 						<MenuItem onSelect={() => (lastAction = 'Archive')}  disabled   > Archive   </MenuItem>
-						<MenuItem onSelect={() => (lastAction = 'Delete')}              > Delete    </MenuItem>
+						<MenuSeparator />
+						<MenuItem onSelect={() => (lastAction = 'Delete')} label="Delete" />
 					</Menu>
 					<p>Last action: {lastAction}</p>
 				</FC>
 			{:else}
 				<CodeBlock
 code={`<script lang="ts">
-  import { Button, Menu, MenuItem } from 'visit-ui';
+  import { Button, Menu, MenuItem, MenuSeparator } from 'visit-ui';
   let lastAction = $state('none');
 </` + `script>
 <Menu>
@@ -57,7 +60,8 @@ code={`<script lang="ts">
   <MenuItem onSelect={() => (lastAction = 'Edit')}              > Edit      </MenuItem>
   <MenuItem onSelect={() => (lastAction = 'Duplicate')}         > Duplicate </MenuItem>
   <MenuItem onSelect={() => (lastAction = 'Archive')}  disabled > Archive   </MenuItem>
-  <MenuItem onSelect={() => (lastAction = 'Delete')}            > Delete    </MenuItem>
+  <MenuSeparator />
+  <MenuItem onSelect={() => (lastAction = 'Delete')} label="Delete" />
 </Menu>
 <p>Last action: {lastAction}</p>`}
 				/>

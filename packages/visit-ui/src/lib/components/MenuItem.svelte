@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+	import LocOrText from './LocOrText.svelte';
 
 	type Props = {
 		onSelect?: (event: Event) => void;
 		disabled?: boolean;
 		closeOnSelect?: boolean;
 		class?: string;
-		children: Snippet;
+		// testo letterale, o "#text_id" per una traduzione (vedi LocOrText); alternativa a children
+		label?: string;
+		children?: Snippet;
 	};
 
 	let {
@@ -15,6 +18,7 @@
 		disabled = false,
 		closeOnSelect = true,
 		class: className = '',
+		label,
 		children
 	}: Props = $props();
 
@@ -37,5 +41,5 @@
 </script>
 
 <DropdownMenu.Item {disabled} {onSelect} {closeOnSelect} class={[base, className].join(' ')}>
-	{@render children()}
+	{#if label}<LocOrText value={label} />{:else}{@render children?.()}{/if}
 </DropdownMenu.Item>

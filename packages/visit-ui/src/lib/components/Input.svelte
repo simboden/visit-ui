@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+	import { lang } from '../stores/lang.svelte.js';
 	import Label from './Label.svelte';
 	import LabelError from './LabelError.svelte';
+	import LocOrText from './LocOrText.svelte';
 
 	type Props = {
 		value?: string | number;
@@ -11,6 +13,8 @@
 		placeholder?: string;
 		label?: string;
 		disabled?: boolean;
+		// lucchetto nella label + campo disabilitato
+		lock?: boolean;
 		autocomplete?: HTMLInputAttributes['autocomplete'];
 		pattern?: string;
 		class?: string;
@@ -27,6 +31,7 @@
 		placeholder = '',
 		label = '',
 		disabled = false,
+		lock = false,
 		autocomplete,
 		pattern,
 		class: className = '',
@@ -67,13 +72,13 @@
 </script>
 
 <div class={className}>
-	{#if label}<Label for={id} {label} />{/if}
+	{#if label}<Label for={id} {label} {lock} />{/if}
 	<div class="relative">
 		<input
 			{id}
 			{type}
-			{placeholder}
-			{disabled}
+			placeholder={lang.loc(placeholder)}
+			disabled={disabled || lock}
 			{autocomplete}
 			{pattern}
 			bind:value
@@ -95,6 +100,6 @@
 		{/if}
 	</div>
 	{#if error}
-		<LabelError>{error}</LabelError>
+		<LabelError><LocOrText value={error} /></LabelError>
 	{/if}
 </div>

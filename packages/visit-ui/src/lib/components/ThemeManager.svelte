@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mdiCheck, mdiClose, mdiContentCopy } from '@mdi/js';
+	import { mdiCheck, mdiClose, mdiContentCopy, mdiStar, mdiStarOutline } from '@mdi/js';
 	import { theme } from '../stores/theme.svelte.js';
 	import { appShell } from '../stores/app.svelte.js';
 	import { Accordion, AccordionItem, Button, ConfirmDialog, FC, FieldColor, FR, Icon, Input } from './index.js';
@@ -60,6 +60,20 @@
 			Delete
 		</Button>
 	</FR>
+
+	{#if theme.canSetDefault}
+		<!-- default = theme shown to users who never picked one -->
+		<Button
+			class="w-full"
+			color="secondary"
+			icon={theme.current.isDefault ? mdiStar : mdiStarOutline}
+			disabled={theme.current.isDefault}
+			title={theme.current.isDefault ? undefined : 'Show this theme to users who never picked one'}
+			onclick={() => theme.makeCurrentDefault()}
+		>
+			{theme.current.isDefault ? 'Default theme' : 'Set as default'}
+		</Button>
+	{/if}
 
     <!-- Sections (incl. their order) come from the theme data itself, not a hardcoded list here,
     so host apps can add their own sections without touching this component. Widget per var is

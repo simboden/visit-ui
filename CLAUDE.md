@@ -13,6 +13,10 @@ The demo imports the library's shared theme via `@import 'visit-ui/theme.css'` (
 
 **Version control is git** (branch `master`, remote on GitHub). Pushing to master triggers CI: the version is bumped from the commit message prefix (`fix:`/`patch:` → patch, `feat:`/`minor:` → minor), the package is published to npm and the demo deployed to GitHub Pages.
 
+- The prefix is matched case-insensitively on the first line of each pushed commit (`FIX:` works too); the highest bump among the pushed commits wins. Commits with any other prefix (e.g. `chore:`, `docs:`) publish nothing and, unless they come from a `dev` → `master` merge, deploy nothing.
+- CI commits the bump itself as `chore(release): visit-ui vX.Y.Z` and pushes it to master, so `git pull` after a release before committing again. Don't bump `version` in `packages/visit-ui/package.json` by hand.
+- The `.svn` directory at the repo root is a stale leftover from the old SVN checkout (git-ignored): don't use `svn` commands.
+
 ## Commands
 
 Run from the repo root unless noted:

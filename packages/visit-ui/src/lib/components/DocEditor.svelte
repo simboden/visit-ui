@@ -7,12 +7,14 @@
     import Superscript from '@tiptap/extension-superscript';
     import { TextStyle } from '@tiptap/extension-text-style';
     import Color from '@tiptap/extension-color';
+    import TextAlign from '@tiptap/extension-text-align';
     import { Icon, SelectNative } from './index.js';
     import {
         mdiUndo, mdiRedo, mdiFormatBold, mdiFormatItalic, mdiFormatUnderline,
         mdiFormatStrikethrough, mdiFormatColorHighlight, mdiFormatSubscript, mdiFormatSuperscript,
         mdiCodeTags, mdiLink, mdiLinkOff, mdiFormatListBulleted, mdiFormatListNumbered,
-        mdiFormatColorText,
+        mdiFormatColorText, mdiFormatAlignLeft, mdiFormatAlignCenter, mdiFormatAlignRight,
+        mdiFormatAlignJustify,
     } from '@mdi/js';
 
     type Props = {
@@ -22,6 +24,7 @@
         autofocus? : boolean | 'start' | 'end' | number;
         class?     : string;
         grow?      : boolean;
+        textColor? : boolean;   // mostra lo strumento per il colore del testo
     };
 
     let {
@@ -31,6 +34,7 @@
         autofocus  = false,
         class: cls = '',
         grow       = false,
+        textColor  = true,
     }: Props = $props();
 
     let element: HTMLDivElement;
@@ -40,7 +44,10 @@
     onMount(() => {
         editor = new Editor({
             element,
-            extensions: [StarterKit, Highlight, Subscript, Superscript, TextStyle, Color],
+            extensions: [
+                StarterKit, Highlight, Subscript, Superscript, TextStyle, Color,
+                TextAlign.configure({ types: ['heading', 'paragraph'] }),
+            ],
             content,
             autofocus,
             onTransaction: () => { updateTick++; },
@@ -66,8 +73,13 @@
             bold: false, italic: false, underline: false, strike: false, highlight: false,
             subscript: false, superscript: false, code: false, link: false,
             bulletList: false, orderedList: false, canUndo: false, canRedo: false, heading: '0',
+            align: 'left',
         };
         let heading = '0';
+        let align = 'left';
+        for (const a of ['center', 'right', 'justify']) {
+            if (editor.isActive({ textAlign: a })) { align = a; break; }
+        }
         for (let lvl = 1; lvl <= 6; lvl++) {
             if (editor.isActive('heading', { level: lvl })) { heading = String(lvl); break; }
         }
@@ -86,6 +98,7 @@
             canUndo:     editor.can().undo(),
             canRedo:     editor.can().redo(),
             heading,
+            align,
         };
     });
 
@@ -112,6 +125,13 @@
         const url = window.prompt('Inserisci URL');
         if (url) editor.chain().focus().toggleLink({ href: url }).run();
     }
+
+    const alignItems = [
+        { value: 'left',    icon: mdiFormatAlignLeft,    label: 'Allinea a sinistra' },
+        { value: 'center',  icon: mdiFormatAlignCenter,  label: 'Centra' },
+        { value: 'right',   icon: mdiFormatAlignRight,   label: 'Allinea a destra' },
+        { value: 'justify', icon: mdiFormatAlignJustify, label: 'Giustifica' },
+    ];
 
     function setTextColor(e: Event) {
         const color = (e.target as HTMLInputElement).value;
@@ -149,10 +169,12 @@
             onchange={(e) => setHeading((e.target as HTMLSelectElement).value)}
         />
 
-        <label class="relative {btnClass(false)}" aria-label="Colore testo">
-            <Icon icon={mdiFormatColorText} size="1.25rem" />
-            <input type="color" class="absolute inset-0 opacity-0 cursor-pointer" oninput={setTextColor} />
-        </label>
+        {#if textColor}
+            <label class="relative {btnClass(false)}" aria-label="Colore testo">
+                <Icon icon={mdiFormatColorText} size="1.25rem" />
+                <input type="color" class="absolute inset-0 opacity-0 cursor-pointer" oninput={setTextColor} />
+            </label>
+        {/if}
 
         <div class="w-px h-5 bg-(--color-card-border) mx-1"></div>
 
@@ -163,6 +185,12 @@
         <button type="button" class={btnClass(tb.highlight)} onclick={() => editor?.chain().focus().toggleHighlight().run()}   aria-label="Evidenzia">    <Icon icon={mdiFormatColorHighlight} size="1.25rem" /></button>
         <button type="button" class={btnClass(tb.subscript)} onclick={() => editor?.chain().focus().toggleSubscript().run()}   aria-label="Pedice">       <Icon icon={mdiFormatSubscript} size="1.25rem" /></button>
         <button type="button" class={btnClass(tb.superscript)} onclick={() => editor?.chain().focus().toggleSuperscript().run()} aria-label="Apice">      <Icon icon={mdiFormatSuperscript} size="1.25rem" /></button>
+
+        <div class="w-px h-5 bg-(--color-card-border) mx-1"></div>
+
+        {#each alignItems as a (a.value)}
+            <button type="button" class={btnClass(tb.align === a.value)} onclick={() => editor?.chain().focus().setTextAlign(a.value).run()} aria-label={a.label}> <Icon icon={a.icon} size="1.25rem" /></button>
+        {/each}
 
         <div class="w-px h-5 bg-(--color-card-border) mx-1"></div>
 

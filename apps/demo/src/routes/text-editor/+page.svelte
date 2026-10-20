@@ -19,8 +19,8 @@
 			<p>
 				<Code>DocEditor</Code> è un editor WYSIWYG basato su
 				<Code>@tiptap/core</Code> + <Code>starter-kit</Code> (più le estensioni
-				<Code>highlight</Code>, <Code>subscript</Code>, <Code>superscript</Code> e
-				<Code>color</Code>/<Code>text-style</Code>), con una toolbar che usa i componenti
+				<Code>highlight</Code>, <Code>subscript</Code>, <Code>superscript</Code>,
+				<Code>text-align</Code> e <Code>color</Code>/<Code>text-style</Code>), con una toolbar che usa i componenti
 				<Code>Icon</Code> e <Code>SelectNative</Code> di visit-ui — quindi rispetta sempre il
 				tema corrente.
 			</p>
@@ -31,6 +31,7 @@
 				<li><Code>onUpdate</Code>: callback <Code>(html: string) =&gt; void</Code>, chiamata ad ogni modifica con l'HTML corrente — alternativa più comoda a leggere <Code>editor.getHTML()</Code> a mano.</li>
 				<li><Code>autofocus</Code>: <Code>boolean | 'start' | 'end' | number</Code>, posizione del focus iniziale (passata direttamente a Tiptap).</li>
 				<li><Code>grow</Code>: quando <Code>true</Code>, l'editor si espande per riempire il contenitore flex (<Code>flex-1</Code>) invece di avere un'altezza intrinseca.</li>
+				<li><Code>textColor</Code>: quando <Code>false</Code>, nasconde dalla toolbar lo strumento per il colore del testo (default <Code>true</Code>).</li>
 				<li><Code>class</Code>: classi aggiuntive sul contenitore esterno.</li>
 			</ul>
 			{#if view === 'preview'}
@@ -54,7 +55,10 @@ code={`<script lang="ts">
 <DocEditor content="<p>Scrivi qualcosa...</p>" bind:editor />
 
 <!-- leggi editor.getHTML() quando serve, oppure: -->
-<DocEditor content="<p>...</p>" onUpdate={(html) => console.log(html)} />`}
+<DocEditor content="<p>...</p>" onUpdate={(html) => console.log(html)} />
+
+<!-- senza lo strumento colore del testo -->
+<DocEditor content="<p>...</p>" textColor={false} />`}
 				/>
 			{/if}
 		</Card>

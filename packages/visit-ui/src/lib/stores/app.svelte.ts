@@ -1,4 +1,5 @@
-export const LEFT_SIDEBAR_WIDTH = '16rem';
+// larghezza regolabile dall'app ridefinendo --sidebar-left-width (default in theme.css)
+export const LEFT_SIDEBAR_WIDTH = 'var(--sidebar-left-width, 16rem)';
 export const RIGHT_SIDEBAR_WIDTH = '300px';
 export const DEFAULT_NAVBAR_HEIGHT = '61px';
 export const LARGE_SCREEN_BREAKPOINT = 1264;

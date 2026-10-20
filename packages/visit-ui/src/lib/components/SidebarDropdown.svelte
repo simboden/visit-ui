@@ -38,7 +38,9 @@
 			{#if icon}
 				<Icon {icon} class="shrink-0" />
 			{/if}
-			<span class="flex-1 whitespace-nowrap text-left"><LocOrText value={label} /></span>
+			<!-- min-w-0 + truncate: un'etichetta troppo lunga si tronca invece di spingere lo chevron
+			     fuori dalla colonna delle rightIcon di SidebarItem -->
+			<span class="flex-1 min-w-0 truncate text-left"><LocOrText value={label} /></span>
 			<Icon
 				icon={mdiChevronDown}
 				size="1.25rem"

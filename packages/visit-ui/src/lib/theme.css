@@ -54,6 +54,13 @@
 	--color-chip: #35465bff;
 }
 
+/* Larghezza della sidebar sinistra (AppLeftSidebar + margine di AppShell). Fuori da @theme e dai
+   vars del theme store: e' una scelta di layout dell'app, non del tema. L'app la cambia con
+   `:root { --sidebar-left-width: 18rem; }` dopo l'import di questo file. */
+:root {
+	--sidebar-left-width: 16rem;
+}
+
 /* -- BODY -- */
 body {
 	color: var(--color-text);

@@ -139,7 +139,10 @@
 
 		<H3>AppLeftSidebar</H3>
 		<p>
-			A fixed-position sidebar, <Code>16rem</Code> wide (<Code>LEFT_SIDEBAR_WIDTH</Code>). Its
+			A fixed-position sidebar, <Code>16rem</Code> wide by default. The width comes from the CSS
+			variable <Code>--sidebar-left-width</Code> (defined in <Code>theme.css</Code>), so an app can
+			change it with <Code>:root {'{'} --sidebar-left-width: 18rem; {'}'}</Code> after importing the
+			theme — <Code>AppShell</Code>'s content margin follows automatically. Its
 			visibility is driven entirely by <Code>appShell.leftOpen</Code>:
 		</p>
 		<FC class="gap-1">
@@ -203,7 +206,7 @@
  -->
         <Card>
             <p class="font-semibold">Constants</p>
-            <p><Code>LEFT_SIDEBAR_WIDTH</Code>(16rem)</p>
+            <p><Code>LEFT_SIDEBAR_WIDTH</Code>(var(--sidebar-left-width, 16rem))</p>
             <p><Code>RIGHT_SIDEBAR_WIDTH</Code>(300px)</p>
             <p><Code>LARGE_SCREEN_BREAKPOINT</Code>(1264px)</p>
             <p><Code>DEFAULT_NAVBAR_HEIGHT</Code>(61px)</p>

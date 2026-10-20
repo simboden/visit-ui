@@ -61,7 +61,9 @@
 	// Quando l'icona c'e', l'item si allinea gia' da solo: niente margine aggiuntivo.
 	const spanClass = $derived(
 		[
-			'flex-1 whitespace-nowrap text-left px-2',
+			// min-w-0: senza, il flex item non scende sotto la larghezza del testo (nowrap) e un
+			// testo lungo spinge rightIcon fuori dalla riga invece di farsi troncare (truncate)
+			'flex-1 min-w-0 whitespace-nowrap text-left px-2',
 			!icon && 'ml-[var(--sidebar-dropdown-indent,0px)]'
 		]
 			.filter(Boolean)

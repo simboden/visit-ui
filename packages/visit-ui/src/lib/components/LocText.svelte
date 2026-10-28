@@ -36,7 +36,18 @@
 		else if (!show_dialog && dialog?.open) dialog.close();
 	});
 
-	function on_show_dialog() {
+	// LocText puo' stare dentro un <a> (SidebarItem) o un <button> (trigger di SidebarDropdown):
+	// il dialog annidato li' dentro riceve click/mousedown/tasti che risalgono al link o al
+	// trigger, e le textarea non prendono il focus. Lo spostiamo in document.body.
+	function portal(node: HTMLElement) {
+		document.body.appendChild(node);
+		return { destroy: () => node.remove() };
+	}
+
+	function on_show_dialog(e: MouseEvent) {
+		// il click non deve arrivare al link/trigger che contiene il LocText
+		e.preventDefault();
+		e.stopPropagation();
 		edit_values = { ...lang.values(text_id) };
 		show_dialog = true;
 	}
@@ -84,8 +95,12 @@
 </span>
 
 {#if lang.lang_edit}
+	<!-- onclose: Esc chiude il dialog nativo senza passare da on_cancel; senza riallineare
+	     show_dialog il dialog non si riaprirebbe piu' -->
 	<dialog
 		bind:this={dialog}
+		use:portal
+		onclose={() => (show_dialog = false)}
 		class="m-auto bg-dialog rounded-lg shadow-2xl border border-(--color-card-border) p-0 w-[800px] max-w-[95vw]"
 	>
 		<Card class="max-w-none! w-full">

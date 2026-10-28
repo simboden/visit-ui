@@ -2,19 +2,34 @@
 	import { lang } from '../stores/lang.svelte.js';
 	import { Button, Accordion, AccordionItem, FC, Spring, Check, H1, H3, Label } from './index.js';
 
-	// raccoglie tutte le sezioni presenti tra le entry caricate
+	// ricerca nel contenuto (tutte le lingue), case-insensitive
+	let search = $state('')
+	let open_sections = $state<string[]>([])
+
+	function matches(e: { values: Record<string, string> }): boolean {
+		const q = search.trim().toLowerCase()
+		if (!q) return true
+		return Object.values(e.values ?? {}).some((v) => v?.toLowerCase().includes(q))
+	}
+
+	// raccoglie tutte le sezioni presenti tra le entry caricate (filtrate dalla ricerca)
 	function sections(): string[] {
-		const keys = new Set(lang.entries.map((e) => e.id.split('.')[0]))
+		const keys = new Set(lang.entries.filter(matches).map((e) => e.id.split('.')[0]))
 		return [...keys].sort()
 	}
 
-	// raccoglie tutte le chiavi di una sezione
+	// raccoglie tutte le chiavi di una sezione (filtrate dalla ricerca)
 	function keys_of(section: string): string[] {
 		const ks = lang.entries
-			.filter((e) => e.id.split('.')[0] === section)
+			.filter((e) => e.id.split('.')[0] === section && matches(e))
 			.map((e) => e.id.split('.')[1])
 		return [...ks].sort()
 	}
+
+	// con una ricerca attiva apre tutte le sezioni con risultati
+	$effect(() => {
+		open_sections = search.trim() ? sections() : []
+	})
 
 	function values_of(id: string): Record<string, string> {
 		return lang.entries.find((e) => e.id === id)?.values ?? {}
@@ -166,10 +181,21 @@
 		</div>
 	</div>
 
+	<!-- ---- RICERCA ---- -->
+	<div class="flex items-center gap-3 bg-card border border-(--color-card-border) rounded-lg p-4">
+		<Label>Cerca nel testo:</Label>
+		<input
+			type="search"
+			bind:value={search}
+			placeholder="testo in qualsiasi lingua..."
+			class="flex-1 bg-input text-input-text text-sm border border-(--color-input-border) rounded p-1.5 focus:outline-none focus:border-(--color-input-focus)"
+		/>
+	</div>
+
 	<!-- ---- TABELLE PER SEZIONE ---- -->
-	<Accordion>
-	{#each sections() as section}
-		<AccordionItem title="{section} ({keys_of(section).length})">
+	<Accordion bind:value={open_sections}>
+	{#each sections() as section (section)}
+		<AccordionItem value={section} title="{section} ({keys_of(section).length})">
 			<div class="overflow-x-auto">
 				<table class="w-full border-collapse">
 					<thead>
@@ -236,7 +262,11 @@
 	{/each}
 	</Accordion>
 
-	{#if sections().length === 0}
+	{#if sections().length === 0 && search.trim()}
+		<div class="text-center text-lab py-12">
+			Nessun testo contiene "{search.trim()}".
+		</div>
+	{:else if sections().length === 0}
 		<div class="text-center text-lab py-12">
 			Nessun testo caricato. Clicca "Ricarica da DB" oppure verifica che lang.setSerializer() venga chiamato all'avvio.
 		</div>
